@@ -1,7 +1,6 @@
 const express = require('express');
 const dotenv = require('dotenv');
-const admin = require('firebase-admin'); // Import Firebase Admin SDK
-const serviceAccount = require('./config/firebase-service-account.json'); // Import your service account JSON
+const cors = require('cors');
 const { createUser, login } = require('./controllers/authController'); // Import your controller functions
 
 
@@ -9,6 +8,14 @@ dotenv.config();
 
 const app = express();
 app.use(express.json());
+
+app.use(cors({
+    origin: 'http://localhost:4200',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+}));
+
+app.options('*', cors());
 
 app.post('/login', login);
 app.post('/create-user', createUser);
