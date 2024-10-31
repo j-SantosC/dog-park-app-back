@@ -1,9 +1,13 @@
+require('dotenv').config();
 const admin = require('firebase-admin');
-const serviceAccount = require('../config/firebase-service-account.json');
+const path = require('path');
+
+// Load the Firebase credentials file
+const serviceAccount = require(path.resolve(process.env.FIREBASE_CREDENTIALS));
 
 admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
-    storageBucket: 'dog-park-app-c06d4.appspot.com', // Your Firebase bucket name
+	credential: admin.credential.cert(serviceAccount),
+	storageBucket: 'gs://pup-radar-8f026.appspot.com',
 });
 
 const storage = admin.storage();
