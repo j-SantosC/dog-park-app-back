@@ -1,10 +1,12 @@
 // server.js
 const express = require('express');
+
 const dotenv = require('dotenv');
 const cors = require('cors');
+
 const authRoutes = require('./routes/authRoutes');
-const uploadRoutes = require('./routes/profileRoutes');
 const userRoutes = require('./routes/userRoutes');
+const dogRoutes = require('./routes/dogRoutes');
 
 dotenv.config();
 
@@ -24,8 +26,8 @@ app.options('*', cors());
 // Define db to use Firestore
 
 app.use('/', authRoutes);
-app.use('/', uploadRoutes);
 app.use('/', userRoutes);
+app.use('/', dogRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

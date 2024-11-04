@@ -15,4 +15,19 @@ const getFirstProfileImageStream = async (userId) => {
 	return fileToKeep.createReadStream();
 };
 
-module.exports = { getFirstProfileImageStream };
+const getFirstDogImageStream = async (dogId) => {
+	const bucket = storage.bucket();
+	const [files] = await bucket.getFiles({
+		prefix: `dog-images/${dogId}`,
+	});
+
+	if (files.length === 0) {
+		throw new Error(`No image found for dog ${dogId}`);
+	}
+
+	const fileToKeep = files[0];
+
+	return fileToKeep.createReadStream();
+};
+
+module.exports = { getFirstProfileImageStream, getFirstDogImageStream };
