@@ -4,6 +4,7 @@ const {
 } = require('../services/firebase/storageService');
 
 const db = admin.firestore();
+const { storage } = require('../infraestructure/firebase');
 
 const addDogController = async (req, res) => {
 	try {
