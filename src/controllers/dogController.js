@@ -158,10 +158,48 @@ const uploadDogImage = async (req, res) => {
 	}
 };
 
+const deleteDogController = async (req, res) => {
+	const dogId = req.params.dogId;
+
+	try {
+		// Referencia al documento del perro en Firestore
+		const dogRef = db.collection('dogs').doc(dogId);
+		const dogDoc = await dogRef.get();
+
+		// Verifica si el perro existe
+		if (!dogDoc.exists) {
+			return res
+				.status(404)
+				.json({ message: 'Dog not found' });
+		}
+
+		// Elimina el documento del perro en Firestore
+		await dogRef.delete();
+
+		// Elimina las imágenes asociadas en Firebase Storage
+		const bucket = storage.bucket();
+		const [files] = await bucket.getFiles({
+			prefix: `dog-images/${dogId}/`,
+		});
+		const deletePromises = files.map((file) => file.delete());
+		await Promise.all(deletePromises);
+
+		res.status(200).json({
+			message: 'Dog and associated images deleted successfully',
+		});
+	} catch (error) {
+		console.error('Error deleting dog:', error);
+		res.status(500).json({
+			error: 'Failed to delete dog',
+		});
+	}
+};
+
 module.exports = {
 	addDogController,
 	updateDogController,
 	getUserDogs,
 	getDogPicController,
 	uploadDogImage,
+	deleteDogController,
 };

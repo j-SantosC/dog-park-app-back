@@ -4,6 +4,7 @@ const {
 	getUserDogs,
 	getDogPicController,
 	uploadDogImage,
+	deleteDogController,
 } = require('../controllers/dogController');
 
 const authMiddleware = require('../middlewares/authMiddleware');
@@ -18,6 +19,7 @@ router.post('/add-dog', addDogController);
 router.put('/update-dog/:dogId', updateDogController);
 router.get('/user-dogs/:userUID', getUserDogs);
 router.get('/dog-images/:dogId', getDogPicController);
+router.delete('/delete-dog/:dogId', authMiddleware, deleteDogController);
 router.post(
 	'/upload-dog-image/:dogId',
 	authMiddleware,

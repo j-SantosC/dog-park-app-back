@@ -8,6 +8,7 @@ const serviceAccount = require(path.resolve(process.env.FIREBASE_CREDENTIALS));
 admin.initializeApp({
 	credential: admin.credential.cert(serviceAccount),
 	storageBucket: 'gs://pup-radar-8f026.appspot.com',
+	databaseURL: 'https://pup-radar-8f026-default-rtdb.firebaseio.com/',
 });
 
 const storage = admin.storage();
