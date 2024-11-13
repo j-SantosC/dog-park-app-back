@@ -98,7 +98,7 @@ app.post('/dog-parks/:parkId/dogs', async (req, res) => {
 
 		// Estructura del perro con timestamp `addedAt`
 		const dogData = {
-			dog: dogId,
+			id: dogId,
 			addedAt: Date.now(), // Tiempo actual en milisegundos
 		};
 
@@ -110,9 +110,38 @@ app.post('/dog-parks/:parkId/dogs', async (req, res) => {
 
 		res.status(201).json({
 			message: 'Dog added to park successfully',
-			dogId,
 			...dogData,
 		});
+	} catch (error) {
+		res.status(500).json({ error: error.message });
+	}
+});
+
+app.get('/dog-parks/:parkId', async (req, res) => {
+	try {
+		const { parkId } = req.params; // Get the park ID from the request parameters
+
+		// Get the specific park data from Realtime Database
+		const parkSnapshot = await admin
+			.database()
+			.ref(`dogParks/${parkId}`)
+			.once('value');
+
+		// Check if the park exists
+		if (!parkSnapshot.exists()) {
+			return res
+				.status(404)
+				.json({ error: 'Park not found' });
+		}
+
+		// Get park data and include the park ID
+		const parkData = {
+			id: parkId,
+			...parkSnapshot.val(),
+		};
+
+		// Send the response with the specific park data
+		res.json(parkData);
 	} catch (error) {
 		res.status(500).json({ error: error.message });
 	}
@@ -156,7 +185,7 @@ const removeExpiredDogs = async () => {
 };
 
 // Programar la tarea para que se ejecute cada 5 minutos
-cron.schedule('*/2 * * * *', () => {
+cron.schedule('*/1 * * * *', () => {
 	console.log('Running task to remove expired dogs...');
 	removeExpiredDogs();
 });
