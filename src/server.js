@@ -6,12 +6,13 @@ const cors = require('cors');
 
 const { admin } = require('./infraestructure/firebase');
 
-// const cron = require('node-cron');
+const cron = require('node-cron');
 
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 const dogRoutes = require('./routes/dogRoutes');
 const parkRoutes = require('./routes/parkRoutes');
+const postRoutes = require('./routes/postRoutes');
 
 // const { removeExpiredDogs } = require('./services/dogs/dogsService');
 
@@ -36,15 +37,16 @@ app.use('/', authRoutes);
 app.use('/', userRoutes);
 app.use('/', dogRoutes);
 app.use('/', parkRoutes);
+app.use('/', postRoutes);
 
 app.use(express.json());
 
 // Programar la tarea para que se ejecute cada minuto
 
-// cron.schedule('*/1 * * * *', () => {
-// 	console.log('Running task to remove expired dogs...');
-// 	removeExpiredDogs();
-// });
+cron.schedule('*/1 * * * *', () => {
+	console.log('Running task to remove expired dogs...');
+	removeExpiredDogs();
+});
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
