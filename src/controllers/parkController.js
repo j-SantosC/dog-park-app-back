@@ -84,6 +84,24 @@ const addDogToPark = async (req, res) => {
 	}
 };
 
+const removeDogFromPark = async (req, res) => {
+	try {
+		const { parkId, dogId } = req.params;
+		if (!parkId || !dogId) {
+			return res.status(400).json({
+				error: 'Park ID and Dog ID are required.',
+			});
+		}
+		await admin
+			.database()
+			.ref(`dogParks/${parkId}/dogs/${dogId}`)
+			.remove();
+		res.json({ message: 'Dog removed from park successfully' });
+	} catch (error) {
+		res.status(500).json({ error: error.message });
+	}
+};
+
 const getPark = async (req, res) => {
 	try {
 		const { parkId } = req.params; // Get the park ID from the request parameters
@@ -114,4 +132,10 @@ const getPark = async (req, res) => {
 	}
 };
 
-module.exports = { addDogPark, getDogParks, addDogToPark, getPark };
+module.exports = {
+	addDogPark,
+	getDogParks,
+	addDogToPark,
+	getPark,
+	removeDogFromPark,
+};
